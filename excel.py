@@ -1,23 +1,9 @@
-﻿#utf-8
+# utf-8
 # 对excel文件进行读取，写入的操作
 import xlrd
 import xlwt
 import re
 import requests
-
-
-# def StrTransInt(string):
-#     try:
-#         Tran = str(string)
-#         STR = re.findall(r"\d+\.?\d*",Tran)
-        
-#     except:
-#         return 0
-#     else:
-#         if STR == []:
-#             return 0
-#         else:
-#             return float(STR[0])
 
 def str_trans_int(string):
     """字符串转数字函数
@@ -124,53 +110,11 @@ def string2List(ustring):
 
 
 # 记录录过音的人
-'''
-recordedName = [
-                '晶晶', '李书平', '张金芝', '张俊波', '刘燕', '庞宝英', '王长福', '季学东',
-                '张冉', '陈元青', '黄曼', '高浩','姜九龙', '沈秀萍', '王喜莲', '方勉', '于小英',
-                '张振兴', '李晓伟', '王桂英', '田亚凤', '刘秀芹', '刘春华', '任福洋','郝淑香',
-                '苗海燕', '王大雷', '王娇', '张方田', '庄明珍', '庄明环','黄瑞云','刘春芳',
-                '赵莲芝', '赵小强', '黄瑞云', '孙逊', '张璐', '刘秀荣', '曾国庆', '刘芸', '王明',
-                '赵东锁', '王玉', '程晓芳'#, '陈瑞', '于世军', '赵丽云', '何昕', '何荫林' ,
-                '张轩', '葛喜成', '徐玲', '宋强', '杨洁林', '付景芬', '聂国兵', '苏立铮', '孙梅',
-                '张新', '陈雄辉', '马一琛', '刘金秋'
-赵雪燕
-孟卫
-王元龙
-樊珍珍         张典
-吴凡
-石榴
-刘玉明    周静      郝志德     陆洪文        田亚其       
- 李爱兵        闫素丽 苏卫革 李秋菊 李岩
- 叶玉兵
-王丹
-卞西朋
-李敬春
-王阔
-                ]
-'''
 
 data = xlrd.open_workbook('原始数据.xls')
 table = data.sheets()[0]   # 提取第一个sheet
 nrows = table.nrows   # 行数
 ncols = table.ncols   # 列数
-
-# print("输入姓名，结束时按 # \n")
-# count = 0
-# while True:
-#     name = input("姓名: ")
-#     if name == '#':
-#         break
-#     else:
-#         count = count + 1
-#         with open('E:/ExcelOp/recoded_name.txt', 'a') as f:
-#             if count == 1:
-#                 f.write('\n')
-#                 f.write(name + '\n')
-#             else:
-#                 f.write(name + '\n')
-
-# print("输入的姓名数目：%d"%(count))
 
 
 sum_match_person = 0  # 符合条件的人数
