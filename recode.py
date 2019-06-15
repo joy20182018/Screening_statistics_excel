@@ -8,7 +8,7 @@ def search_name(init_name):
     """
 
     search = False
-    with open('E:/ExcelOp/recoded_name.txt', 'r') as f:
+    with open('D:/AIroot/ExcelOp/recoded_name.txt', 'r') as f:
         for line_name in f:
             if line_name[:-1] == init_name:
                 # print(line_name)
@@ -27,22 +27,34 @@ def search_name(init_name):
 """
 
 while True:
-    print("-"*16)
-    print("输入 0： 输入已录人员名单， 1：查找是否有重复项， 2：列出现有的名单， 3： 不输入任何东西，结束程序")
-    print("-"*16)
+    print("-"*100)
+    print("输入 0: 输入已录人员名单， 1: 查找是否有重复项， 2: 列出现有的名单， 3: 不输入任何东西，结束程序")
+    print("-"*100)
     
-    tag = int(input("输入数字："))
+    tag = int(input("输入数字：")) # 限制只能输数字
 
     if tag == 0:
         print("输入姓名，结束时按 # \n")
         count = 0
+        
+        """
+        name = input("姓名(每个姓名之间用逗号或空格分开)： ")
+        for i in range(len(name)):
+            if name[i] == '#':
+                break
+            elseif (name[i] == ' ') || (name[i] == ','):
+                
+        
+        """
+        
+        
         while True:
             name = input("姓名: ")
             if name == '#':
                 break
             else:
                 count = count + 1
-                with open('E:/ExcelOp/recoded_name.txt', 'a') as f:
+                with open('D:/AIroot/ExcelOp/recoded_name.txt', 'a') as f:
                     if count == 1:
                         f.write('\n')
                         f.write(name + '\n')
@@ -56,7 +68,7 @@ while True:
         if n == 1:
             pass
         else:
-            break
+            continue
 
     elif tag == 1:
         print("输入姓名\n")
@@ -67,18 +79,20 @@ while True:
         if n == 1:
             pass
         else:
-            break
+            continue
 
     elif tag == 2:
-        with open('E:/ExcelOp/recoded_name.txt', 'r') as f:
+        with open('D:/AIroot/ExcelOp/recoded_name.txt', 'r') as f:
             for line_name in f:
                 print(line_name)
         print("-"*16)
         print("结束")
+        continue
+        print("\n")
 
     elif tag == 3:
         break
 
     else:
-        print("重输")
+        print("输入违法，重输")
 
