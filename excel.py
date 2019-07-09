@@ -1,9 +1,10 @@
-# utf-8
+#utf-8
 # 对excel文件进行读取，写入的操作
 import xlrd
 import xlwt
 import re
 import requests
+
 
 def str_trans_int(string):
     """字符串转数字函数
@@ -13,11 +14,13 @@ def str_trans_int(string):
     """
 
     # 字符库
+    # 做这个的原因：有些人在填表或制表过程中写作不规范导致
     numlib = {'零': '0', '一': '1', '二': '2', '三': '3',
             '四': '4', '五': '5', '六': '6', '七': '7',
             '八': '8', '九': '9', '十': '0',
             '岁': ''
             }
+    # 有时会出现更加意想不到的情况
     try:
         Tran = str(string)  
         STR = re.findall(r"\d+\.?\d*", Tran)   # 提取其中的数字
@@ -60,62 +63,11 @@ def search_name(init_name):
             return 0
 
 
-"""汉字处理的工具:
-判断unicode是否是汉字，数字，英文，或者其他字符。
-"""
-def is_chinese(uchar):
-    """判断一个unicode是否是汉字"""
-    if uchar >= u'\u4e00' and uchar<=u'\u9fa5':
-        return True
-    else:
-        return False
-
-def is_number(uchar):
-    """判断一个unicode是否是数字"""
-    if uchar >= u'\u0030' and uchar<=u'\u0039':
-        return True
-    else:
-        return False
-
-def is_alphabet(uchar):
-    """判断一个unicode是否是英文字母"""
-    if (uchar >= u'\u0041' and uchar<=u'\u005a') or (uchar >= u'\u0061' and uchar<=u'\u007a'):
-        return True
-    else:
-        return False
-
-def is_other(uchar):
-    """判断是否非汉字，数字和英文字符"""
-    if not (is_chinese(uchar) or is_number(uchar) or is_alphabet(uchar)):
-        return True
-    else:
-        return False
-
-def string2List(ustring):
-    """将ustring按照中文，字母，数字分开"""
-    retList=[]
-    utmp=[]
-    for uchar in ustring:
-        if is_other(uchar):
-            if len(utmp)==0:
-                continue
-            else:
-                retList.append("".join(utmp))
-                utmp=[]
-        else:
-            utmp.append(uchar)
-        if len(utmp)!=0:
-            retList.append("".join(utmp))
-        return retList
-
-
-# 记录录过音的人
-
+# 读取原始数据集，从网上或者其他渠道获取的excel文件
 data = xlrd.open_workbook('原始数据.xls')
 table = data.sheets()[0]   # 提取第一个sheet
 nrows = table.nrows   # 行数
 ncols = table.ncols   # 列数
-
 
 sum_match_person = 0  # 符合条件的人数
 sum_match_boy = 0  # 符合条件的男生人数
@@ -124,10 +76,14 @@ sum_no_match_person = 0 # 不符合条件的人数
 sum_no_match_boy = 0  # 不符合条件的男生人数
 sum_no_match_girl = 0  # 不符合条件的女生人数
 # 写入数据
-workbook_1 = xlwt.Workbook(encoding='utf-8', style_compression=0)   # 创建第一个表格
-sheet_match = workbook_1.add_sheet('DATAmatch', cell_overwrite_ok=True)   # 合格人数表格
-workbook_2 = xlwt.Workbook(encoding='utf-8', style_compression=1)   # 创建第二个表格
-sheet_nomatch = workbook_2.add_sheet('DATAnomatch', cell_overwrite_ok=True) # 不合格人数表格
+# 创建第一个表格
+workbook_1 = xlwt.Workbook(encoding='utf-8', style_compression=0)   
+# 合格人数表格
+sheet_match = workbook_1.add_sheet('DATAmatch', cell_overwrite_ok=True) 
+# 创建第二个表格
+workbook_2 = xlwt.Workbook(encoding='utf-8', style_compression=1)   
+# 不合格人数表格
+sheet_nomatch = workbook_2.add_sheet('DATAnomatch', cell_overwrite_ok=True) 
 
 # 在表格第一行写入标记
 sheet_match.write(0, 0, '姓名')
@@ -142,27 +98,33 @@ sheet_nomatch.write(0, 3, '分数')
 
 sum_person = 0  # 总人数
 
-for i in range(406, nrows):
+check_count = 466 #  从第几行开始检查
+
+for i in range(check_count, nrows):
+    # 从excel中提取有用信息进行比较
     num = table.row(i)[0].value
     if num > 1:
         Score = table.row(i)[ncols - 1].value
-        Age = table.row(i)[7].value
+        Age = table.row(i)[7].value # 表示第i行第7列
         Age= str_trans_int(Age)
         Name = table.row(i)[6].value
         Sex = table.row(i)[8].value
 
         sum_person = sum_person + 1
-#
-# (Name not in recordedName)
-        if Score < 5 and Score >= 0 and (Age >= 30 or Age == 0) and Age <= 60 and (not search_name(Name)):
+
+
+        # 合格人数统计
+        if Score < 5 and Score >= 0 and (not search_name(Name)):
             sum_match_person = sum_match_person + 1
+
+            # 根据表格制作者的信息进行修改
             if Sex == 1:
                 sex = "男"
                 sum_match_boy = sum_match_boy + 1
             if Sex == 2:
                 sex = "女"
                 sum_match_girl = sum_match_girl + 1
-
+            # 写入数据
             sheet_match.write(sum_match_person, 0, Name)
             
             if Age == 0:
@@ -177,10 +139,6 @@ for i in range(406, nrows):
         # 不合格人数统计  
         else:
             Age = table.row(i)[7].value
-            # # if Name in recordedName:
-            # if search_name(Name):
-            #     continue
-            # else:
             sum_no_match_person = sum_no_match_person + 1
             if Sex == 1:
                 sex = "男"
@@ -210,7 +168,7 @@ sheet_nomatch.write(sum_no_match_person + 2, 5, sum_no_match_boy)
 sheet_nomatch.write(sum_no_match_person + 3, 4, "女生人数")
 sheet_nomatch.write(sum_no_match_person + 3, 5, sum_no_match_girl)
 
-
+# 保存两个文件
 workbook_1.save(r'合格人.xls')
 workbook_2.save(r'不合格人.xls')
 print("运行完毕")
